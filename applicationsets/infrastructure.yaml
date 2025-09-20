@@ -14,8 +14,7 @@ spec:
             chart: elasticsearch
             namespace: elasticsearch
             environment: lab
-            helmValueFiles:
-              - applications/elasticsearch/values/lab.yaml
+            helmValueFile: applications/elasticsearch/values/lab.yaml  # Changed to single string
           - name: external-secrets
             type: helm
             repo: https://charts.external-secrets.io
@@ -23,8 +22,7 @@ spec:
             chart: external-secrets
             namespace: external-secrets
             environment: lab
-            helmValueFiles:
-              - applications/external-secrets/values/lab.yaml
+            helmValueFile: applications/external-secrets/values/lab.yaml  # Changed to single string
           - name: fluent-bit
             type: helm
             repo: https://fluent.github.io/helm-charts
@@ -32,8 +30,7 @@ spec:
             chart: fluent-bit
             namespace: fluent-bit
             environment: lab
-            helmValueFiles:
-              - applications/fluent-bit/values/lab.yaml
+            helmValueFile: applications/fluent-bit/values/lab.yaml  # Changed to single string
           - name: kibana
             type: helm
             repo: https://helm.elastic.co
@@ -41,8 +38,7 @@ spec:
             chart: kibana
             namespace: kibana
             environment: lab
-            helmValueFiles:
-              - applications/kibana/values/lab.yaml
+            helmValueFile: applications/kibana/values/lab.yaml  # Changed to single string
           - name: vault
             type: helm
             repo: https://helm.releases.hashicorp.com
@@ -50,17 +46,15 @@ spec:
             chart: vault
             namespace: vault
             environment: lab
-            helmValueFiles:
-              - applications/vault/values/lab.yaml
-
+            helmValueFile: applications/vault/values/lab.yaml  # Changed to single string
   template:
     metadata:
-      name: '{{environment}}-{{name}}'
+      name: '{{name}}'
       namespace: argocd
       finalizers:
         - resources-finalizer.argocd.argoproj.io/background
     spec:
-      project: default
+      project: infrastructure
       sources:
         # Helm chart source
         - repoURL: '{{repo}}'
@@ -68,11 +62,10 @@ spec:
           chart: '{{chart}}'
           helm:
             valueFiles:
-              - $values/{{helmValueFiles.0}}
-        # Git repo containing values files
-        - repoURL: https://github.com/your-org/your-infrastructure-repo.git
+              - $baseDir/{{helmValueFile}} 
+        - repoURL: https://github.com/allyman17/the-construct
           targetRevision: main
-          ref: values
+          ref: baseDir
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
@@ -80,3 +73,4 @@ spec:
         automated:
           prune: true
           selfHeal: true
+        syncOptions: []
