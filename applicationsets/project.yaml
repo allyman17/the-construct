@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: infrastructure
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: https://kubernetes.default.svc
+  sourceRepos:
+    - https://helm.elastic.co
+    - https://charts.external-secrets.io
+    - https://fluent.github.io/helm-charts
+    - https://helm.elastic.co
+    - https://helm.releases.hashicorp.com
+    - https://github.com/allyman17/the-construct
+  namespaceResourceWhitelist:
+  - group: '*'
+    kind: '*'
