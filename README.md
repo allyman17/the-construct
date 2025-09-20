@@ -1,0 +1,3 @@
+This is the Construct. It's our loading program. We can load anything from ESO to Fluent Bit...
+
+This is our infrastructure loading program where we load and manage everything our Kubernetes clusters need to operate
