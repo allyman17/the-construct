@@ -1,0 +1,82 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: infrastructure
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - name: elasticsearch
+            type: helm
+            repo: https://helm.elastic.co
+            targetRevision: 8.5.1
+            chart: elasticsearch
+            namespace: elasticsearch
+            environment: lab
+            helmValueFiles:
+              - applications/elasticsearch/values/lab.yaml
+          - name: external-secrets
+            type: helm
+            repo: https://charts.external-secrets.io
+            targetRevision: 0.18.2
+            chart: external-secrets
+            namespace: external-secrets
+            environment: lab
+            helmValueFiles:
+              - applications/external-secrets/values/lab.yaml
+          - name: fluent-bit
+            type: helm
+            repo: https://fluent.github.io/helm-charts
+            targetRevision: 0.50.0
+            chart: fluent-bit
+            namespace: fluent-bit
+            environment: lab
+            helmValueFiles:
+              - applications/fluent-bit/values/lab.yaml
+          - name: kibana
+            type: helm
+            repo: https://helm.elastic.co
+            targetRevision: 8.5.1
+            chart: kibana
+            namespace: kibana
+            environment: lab
+            helmValueFiles:
+              - applications/kibana/values/lab.yaml
+          - name: vault
+            type: helm
+            repo: https://helm.releases.hashicorp.com
+            targetRevision: 0.30.1
+            chart: vault
+            namespace: vault
+            environment: lab
+            helmValueFiles:
+              - applications/vault/values/lab.yaml
+
+  template:
+    metadata:
+      name: '{{environment}}-{{name}}'
+      namespace: argocd
+      finalizers:
+        - resources-finalizer.argocd.argoproj.io/background
+    spec:
+      project: default
+      sources:
+        # Helm chart source
+        - repoURL: '{{repo}}'
+          targetRevision: '{{targetRevision}}'
+          chart: '{{chart}}'
+          helm:
+            valueFiles:
+              - $values/{{helmValueFiles.0}}
+        # Git repo containing values files
+        - repoURL: https://github.com/your-org/your-infrastructure-repo.git
+          targetRevision: main
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true

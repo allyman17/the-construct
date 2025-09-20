@@ -1,0 +1,11 @@
+dex:
+  enabled: false
+
+redis-ha:
+  enabled: false
+
+server:
+  service:
+    type: NodePort
+    nodePortHttp: 30080
+    nodePortHttps: 30443

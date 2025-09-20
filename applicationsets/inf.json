@@ -1,0 +1,65 @@
+[
+  {
+    "name": "argocd",
+    "type": "helm",
+    "repo": "https://argoproj.github.io/argo-helm",
+    "target": "8.2.5",
+    "chart": "argo-cd",
+    "namespace": "argocd",
+    "helmValueFiles": ["applications/argocd/values/lab.yaml"]
+  },
+  {
+    "name": "elasticsearch",
+    "type": "helm",
+    "repo": "https://helm.elastic.co",
+    "target": "8.5.1",
+    "chart": "elasticsearch",
+    "namespace": "elasticsearch",
+    "helmValueFiles": ["applications/elasticsearch/values/lab.yaml"]
+  },
+  {
+    "name": "external-secrets",
+    "type": "helm",
+    "repo": "https://charts.external-secrets.io",
+    "target": "0.18.2",
+    "chart": "external-secrets",
+    "namespace": "external-secrets",
+    "helmValueFiles": ["applications/external-secrets/values/lab.yaml"]
+  },
+  {
+    "name": "fluent-bit",
+    "type": "helm",
+    "repo": "https://fluent.github.io/helm-charts",
+    "target": "0.50.0",
+    "chart": "fluent-bit",
+    "namespace": "fluent-bit",
+    "helmValueFiles": ["applications/fluent-bit/values/lab.yaml"]
+  },
+  {
+    "name": "goldilocks",
+    "type": "helm",
+    "repo": "https://charts.fairwinds.com/stable",
+    "target": "9.1.0",
+    "chart": "goldilocks",
+    "namespace": "goldilocks",
+    "helmValueFiles": ["applications/goldilocks/values/lab.yaml"]
+  },
+  {
+    "name": "kibana",
+    "type": "helm",
+    "repo": "https://helm.elastic.co",
+    "target": "8.5.1",
+    "chart": "kibana",
+    "namespace": "kibana",
+    "helmValueFiles": ["applications/kibana/values/lab.yaml"]
+  },
+  {
+    "name": "vault",
+    "type": "helm",
+    "repo": "https://helm.releases.hashicorp.com",
+    "target": "0.30.1",
+    "chart": "vault",
+    "namespace": "vault",
+    "helmValueFiles": ["applications/vault/values/lab.yaml"]
+  }
+]

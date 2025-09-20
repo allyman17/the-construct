@@ -1,0 +1,25 @@
+vpa:
+  enabled: true
+
+controller:
+  flags:
+    on-by-default: true
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      cpu: 15m
+      memory: 105M
+
+dashboard:
+  replicaCount: 1
+  flags:
+    on-by-default: true
+  resources:
+    requests:
+      cpu: 15m
+      memory: 105M
+    limits:
+      cpu: 15m
+      memory: 105M

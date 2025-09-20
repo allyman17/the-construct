@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    targetRevision: 8.2.5
+    chart: argo-cd
+    helm:
+      values: |
+        dex:
+          enabled: false
+        redis-ha:
+          enabled: false
+        server:
+          service:
+            type: NodePort
+            nodePortHttp: 30080
+            nodePortHttps: 30443
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+

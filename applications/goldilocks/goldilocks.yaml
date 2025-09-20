@@ -1,0 +1,43 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: goldilocks
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://charts.fairwinds.com/stable
+    chart: goldilocks
+    targetRevision: 9.1.0
+    helm:
+      values: |
+        vpa:
+          enabled: true
+        
+        controller:
+          flags:
+            on-by-default: true
+          resources:
+            requests:
+              cpu: 15m
+              memory: 105M
+            limits:
+              cpu: 15m
+              memory: 105M
+        
+        dashboard:
+          replicaCount: 1
+          flags:
+            on-by-default: true
+          resources:
+            requests:
+              cpu: 15m
+              memory: 105M
+            limits:
+              cpu: 15m
+              memory: 105M
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: goldilocks
+  syncPolicy:
+

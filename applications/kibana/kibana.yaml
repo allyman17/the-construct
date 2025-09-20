@@ -1,0 +1,76 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kibana
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io/background
+spec:
+  project: default
+  source:
+    repoURL: https://helm.elastic.co
+    chart: kibana
+    targetRevision: "8.5.1"
+    helm:
+      values: |    
+        # Basic settings
+        replicas: 1
+        
+        # Resource limits
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "512M"
+          limits:
+            cpu: "1000m"
+            memory: "1Gi"
+        
+        # Elasticsearch configuration
+        elasticsearchHosts: "http://elasticsearch-master.elasticsearch.svc.cluster.local:9200"
+        
+        # Explicitly set the protocol
+        protocol: http
+        
+        # Service configuration
+        service:
+          type: ClusterIP
+          port: 5601
+          nodePort: null
+          labels: {}
+          annotations: {}
+          loadBalancerIP: ""
+          loadBalancerSourceRanges: []
+          externalTrafficPolicy: ""
+        
+        # Disable SSL/TLS related features
+        serverHost: "0.0.0.0"
+        elasticsearchSSL:
+          enabled: false
+          
+        # Extra environment variables to ensure HTTP
+        extraEnvs:
+          - name: ELASTICSEARCH_SSL_VERIFICATIONMODE
+            value: "none"
+          - name: SERVER_SSL_ENABLED
+            value: "false"
+        
+        # Pod annotations
+        podAnnotations: {}
+        
+        # Kibana config
+        kibanaConfig:
+          kibana.yml: |
+            server.host: "0.0.0.0"
+            server.shutdownTimeout: "5s"
+            elasticsearch.hosts: ["http://elasticsearch-master.elasticsearch.svc.cluster.local:9200"]
+            monitoring.ui.container.elasticsearch.enabled: true
+            elasticsearch.ssl.verificationMode: none
+            
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kibana
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
